@@ -10,9 +10,7 @@ import {
 import PermissionWrapper from '@/components/PermissionWrapper';
 import { IconDownload, IconPlus } from '@arco-design/web-react/icon';
 import axios from 'axios';
-import useLocale from '@/utils/useLocale';
 import SearchForm from './form';
-import locale from './locale';
 import styles from './style/index.module.less';
 import './mock';
 import { getColumns } from './constants';
@@ -23,13 +21,11 @@ export const FilterType = ['规则筛选', '人工'];
 export const Status = ['已上线', '未上线'];
 
 function SearchTable() {
-  const t = useLocale(locale);
-
   const tableCallback = async (record, type) => {
     console.log(record, type);
   };
 
-  const columns = useMemo(() => getColumns(t, tableCallback), [t]);
+  const columns = getColumns(tableCallback);
 
   const [data, setData] = useState([]);
   const [pagination, setPatination] = useState<PaginationProps>({
@@ -50,7 +46,7 @@ function SearchTable() {
     const { current, pageSize } = pagination;
     setLoading(true);
     axios
-      .get('/api/list', {
+      .get('http://localhost:7676/api/market/getMerchants', {
         params: {
           page: current,
           pageSize,
@@ -84,27 +80,15 @@ function SearchTable() {
 
   return (
     <Card>
-      <Title heading={6}>{t['menu.list.searchTable']}</Title>
+      <Title heading={6}>搜索</Title>
       <SearchForm onSearch={handleSearch} />
-      <PermissionWrapper
-        requiredPermissions={[
-          { resource: 'menu.list.searchTable', actions: ['write'] },
-        ]}
-      >
-        <div className={styles['button-group']}>
-          <Space>
-            <Button type="primary" icon={<IconPlus />}>
-              {t['searchTable.operations.add']}
-            </Button>
-            <Button>{t['searchTable.operations.upload']}</Button>
-          </Space>
-          <Space>
-            <Button icon={<IconDownload />}>
-              {t['searchTable.operation.download']}
-            </Button>
-          </Space>
-        </div>
-      </PermissionWrapper>
+      <div className={styles['button-group']}>
+        <Space>
+          <Button type="primary" icon={<IconPlus />}>
+            新增
+          </Button>
+        </Space>
+      </div>
       <Table
         rowKey="id"
         loading={loading}

@@ -1,7 +1,7 @@
 {
-  "name": "arco-design-pro",
+  "name": "markets-admin",
   "version": "1.0.0",
-  "description": "Arco Design Pro",
+  "description": "集集有你",
   "scripts": {
     "start": "vite",
     "dev": "vite",
