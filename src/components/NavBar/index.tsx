@@ -29,7 +29,6 @@ import { GlobalState } from '@/store';
 import { GlobalContext } from '@/context';
 import useLocale from '@/utils/useLocale';
 import Logo from '@/assets/logo.svg';
-import MessageBox from '@/components/MessageBox';
 import IconButton from './IconButton';
 import Settings from '../Settings';
 import styles from './style/index.module.less';
@@ -91,48 +90,6 @@ function Navbar({ show }: { show: boolean }) {
 
   const droplist = (
     <Menu onClickMenuItem={onMenuItemClick}>
-      <Menu.SubMenu
-        key="role"
-        title={
-          <>
-            <IconUser className={styles['dropdown-icon']} />
-            <span className={styles['user-role']}>
-              {role === 'admin'
-                ? t['menu.user.role.admin']
-                : t['menu.user.role.user']}
-            </span>
-          </>
-        }
-      >
-        <Menu.Item onClick={handleChangeRole} key="switch role">
-          <IconTag className={styles['dropdown-icon']} />
-          {t['menu.user.switchRoles']}
-        </Menu.Item>
-      </Menu.SubMenu>
-      <Menu.Item key="setting">
-        <IconSettings className={styles['dropdown-icon']} />
-        {t['menu.user.setting']}
-      </Menu.Item>
-      <Menu.SubMenu
-        key="more"
-        title={
-          <div style={{ width: 80 }}>
-            <IconExperiment className={styles['dropdown-icon']} />
-            {t['message.seeMore']}
-          </div>
-        }
-      >
-        <Menu.Item key="workplace">
-          <IconDashboard className={styles['dropdown-icon']} />
-          {t['menu.dashboard.workplace']}
-        </Menu.Item>
-        <Menu.Item key="card list">
-          <IconInteraction className={styles['dropdown-icon']} />
-          {t['menu.list.cardList']}
-        </Menu.Item>
-      </Menu.SubMenu>
-
-      <Divider style={{ margin: '4px 0' }} />
       <Menu.Item key="logout">
         <IconPoweroff className={styles['dropdown-icon']} />
         {t['navbar.logout']}
@@ -149,38 +106,6 @@ function Navbar({ show }: { show: boolean }) {
         </div>
       </div>
       <ul className={styles.right}>
-        <li>
-          <Input.Search
-            className={styles.round}
-            placeholder={t['navbar.search.placeholder']}
-          />
-        </li>
-        <li>
-          <Select
-            triggerElement={<IconButton icon={<IconLanguage />} />}
-            options={[
-              { label: '中文', value: 'zh-CN' },
-              { label: 'English', value: 'en-US' },
-            ]}
-            value={lang}
-            triggerProps={{
-              autoAlignPopupWidth: false,
-              autoAlignPopupMinWidth: true,
-              position: 'br',
-            }}
-            trigger="hover"
-            onChange={(value) => {
-              setLang(value);
-              const nextLang = defaultLocale[value];
-              Message.info(`${nextLang['message.lang.tips']}${value}`);
-            }}
-          />
-        </li>
-        <li>
-          <MessageBox>
-            <IconButton icon={<IconNotification />} />
-          </MessageBox>
-        </li>
         <li>
           <Tooltip
             content={

@@ -28,4 +28,17 @@ export default defineConfig({
       },
     },
   },
+  // http://localhost:7777/api/ => http://localhost:7676/
+  server: {
+    host: '0.0.0.0',
+    port: 7777,
+    open: true,
+    proxy: {
+      '/api': {
+        target: 'https://hrapi-dev.yilieyun.cn/',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  },
 });

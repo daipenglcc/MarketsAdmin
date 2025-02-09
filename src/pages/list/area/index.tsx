@@ -6,13 +6,12 @@ import {
   Button,
   Space,
   Typography,
+  Modal,
+  Form,
+  Input,
 } from '@arco-design/web-react';
-import PermissionWrapper from '@/components/PermissionWrapper';
 import { IconDownload, IconPlus } from '@arco-design/web-react/icon';
-import axios from 'axios';
-import SearchForm from './form';
 import styles from './style/index.module.less';
-import './mock';
 import { getColumns } from './constants';
 
 const { Title } = Typography;
@@ -45,24 +44,24 @@ function SearchTable() {
   function fetchData() {
     const { current, pageSize } = pagination;
     setLoading(true);
-    axios
-      .get('http://localhost:7676/api/market/getMerchants', {
-        params: {
-          page: current,
-          pageSize,
-          ...formParams,
-        },
-      })
-      .then((res) => {
-        setData(res.data.list);
-        setPatination({
-          ...pagination,
-          current,
-          pageSize,
-          total: res.data.total,
-        });
-        setLoading(false);
-      });
+    // axios
+    //   .get('http://localhost:7676/api/market/getMerchants', {
+    //     params: {
+    //       page: current,
+    //       pageSize,
+    //       ...formParams,
+    //     },
+    //   })
+    //   .then((res) => {
+    setData([]);
+    // setPatination({
+    //   ...pagination,
+    //   current,
+    //   pageSize,
+    //   total: res.data.total,
+    // });
+    setLoading(false);
+    // });
   }
 
   function onChangeTable({ current, pageSize }) {
@@ -78,17 +77,48 @@ function SearchTable() {
     setFormParams(params);
   }
 
+  const [visible, setVisible] = useState(false); // 新增状态管理
+
+  const handleAdd = () => {
+    setVisible(true); // 点击新增按钮时显示模态框
+  };
+
+  const handleOk = () => {
+    // 提交后关闭模态框
+    setVisible(false);
+  };
+
+  const handleCancel = () => {
+    setVisible(false); // 取消时关闭模态框
+  };
+
   return (
     <Card>
       <Title heading={6}>搜索</Title>
-      <SearchForm onSearch={handleSearch} />
       <div className={styles['button-group']}>
+        <div></div>
         <Space>
-          <Button type="primary" icon={<IconPlus />}>
-            新增2
+          <Button type="primary" icon={<IconPlus />} onClick={handleAdd}>
+            新增
           </Button>
         </Space>
       </div>
+      {/* 新增模态框 */}
+      <Modal
+        title="新增项目"
+        visible={visible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okText="确定"
+        cancelText="取消"
+      >
+        <Form>
+          <Form.Item label="地区名称" field="name" rules={[{ required: true }]}>
+            <Input placeholder="请输入地区名称" />
+          </Form.Item>
+          {/* 可以根据需要添加更多表单项 */}
+        </Form>
+      </Modal>
       <Table
         rowKey="id"
         loading={loading}

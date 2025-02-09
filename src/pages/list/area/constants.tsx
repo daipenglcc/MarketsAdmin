@@ -16,23 +16,13 @@ export function getColumns(
 ) {
   return [
     {
-      title: '大集编号',
+      title: '区域编号',
       dataIndex: 'id',
       render: (value) => <Text copyable>{value}</Text>,
     },
     {
-      title: '大集名称',
+      title: '区域名称',
       dataIndex: 'name',
-    },
-    {
-      title: '所属区域',
-      dataIndex: 'filterType',
-      render: (value) => FilterType[value],
-    },
-    {
-      title: '地址',
-      dataIndex: 'filterType',
-      render: (value) => FilterType[value],
     },
     {
       title: '创建时间',
