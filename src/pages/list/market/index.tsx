@@ -11,6 +11,7 @@ import PermissionWrapper from '@/components/PermissionWrapper';
 import { IconDownload, IconPlus } from '@arco-design/web-react/icon';
 import axios from 'axios';
 import SearchForm from './form';
+import { getAllMerchants } from '../../../api/market';
 import styles from './style/index.module.less';
 import './mock';
 import { getColumns } from './constants';
@@ -42,28 +43,28 @@ function SearchTable() {
     fetchData();
   }, [pagination.current, pagination.pageSize, JSON.stringify(formParams)]);
 
-  function fetchData() {
-    const { current, pageSize } = pagination;
-    setLoading(true);
-    axios
-      .get('http://localhost:7676/api/market/getMerchants', {
-        params: {
-          page: current,
-          pageSize,
-          ...formParams,
-        },
-      })
-      .then((res) => {
-        setData(res.data.list);
-        setPatination({
-          ...pagination,
-          current,
-          pageSize,
-          total: res.data.total,
-        });
-        setLoading(false);
+  const fetchData = async () => {
+    try {
+      const { current, pageSize } = pagination;
+      setLoading(true);
+      const ret: any = await getAllMerchants({
+        pageIndex: current,
+        pageSize,
+        ...formParams,
       });
-  }
+      setData(ret.merchants);
+      setPatination({
+        ...pagination,
+        current,
+        pageSize,
+        total: ret.count,
+      });
+    } catch (error) {
+      console.error('获取数据失败:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   function onChangeTable({ current, pageSize }) {
     setPatination({

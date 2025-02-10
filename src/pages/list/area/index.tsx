@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
+  Message,
   Table,
   Card,
   PaginationProps,
   Typography,
+  Button,
+  Space,
+  Empty,
 } from '@arco-design/web-react';
 import { getColumns } from './constants';
-import AddAreaModal from './AddAreaModal'; // 导入新组件
-
-const { Title } = Typography;
-export const ContentType = ['图文', '横版短视频', '竖版短视频'];
-export const FilterType = ['规则筛选', '人工'];
-export const Status = ['已上线', '未上线'];
+import AddAreaModal from './AddAreaModal';
+import { getAreas, addArea } from '../../../api/market';
+import styles from './style/index.module.less';
+import { IconPlus } from '@arco-design/web-react/icon';
 
 function SearchTable() {
   const tableCallback = async (record, type) => {
@@ -29,34 +31,29 @@ function SearchTable() {
     pageSizeChangeResetCurrent: true,
   });
   const [loading, setLoading] = useState(true);
-  const [formParams, setFormParams] = useState({});
 
   useEffect(() => {
     fetchData();
-  }, [pagination.current, pagination.pageSize, JSON.stringify(formParams)]);
+  }, [pagination.current, pagination.pageSize]);
 
-  function fetchData() {
-    const { current, pageSize } = pagination;
-    setLoading(true);
-    // axios
-    //   .get('http://localhost:7676/api/market/getMerchants', {
-    //     params: {
-    //       page: current,
-    //       pageSize,
-    //       ...formParams,
-    //     },
-    //   })
-    //   .then((res) => {
-    setData([]);
-    // setPatination({
-    //   ...pagination,
-    //   current,
-    //   pageSize,
-    //   total: res.data.total,
-    // });
-    setLoading(false);
-    // });
-  }
+  const fetchData = async () => {
+    try {
+      const { current, pageSize } = pagination;
+      setLoading(true);
+      const ret: any = await getAreas({ pageIndex: current, pageSize });
+      setData(ret.areas);
+      setPatination({
+        ...pagination,
+        current,
+        pageSize,
+        total: ret.count,
+      });
+    } catch (error) {
+      console.error('获取数据失败:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   function onChangeTable({ current, pageSize }) {
     setPatination({
@@ -66,11 +63,38 @@ function SearchTable() {
     });
   }
 
+  const [modalVisible, setModalVisible] = useState(false); // 控制弹窗显示
+  const handleAdd = () => {
+    setModalVisible(true); // 显示弹窗
+  };
+  const handleOk = async (values) => {
+    try {
+      await addArea({
+        title: values.title,
+      });
+      Message.success('添加成功');
+      setModalVisible(false); // 提交成功后关闭弹窗
+      fetchData(); // 重新获取数据
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+  const onClose = () => {
+    setModalVisible(false); // 关闭弹窗
+  };
+
   return (
     <Card>
-      <Title heading={6}>搜索</Title>
-
-      <AddAreaModal />
+      <Typography.Title heading={6}>区域列表</Typography.Title>
+      <div className={styles['button-group']}>
+        <div></div>
+        <Space>
+          <Button type="primary" icon={<IconPlus />} onClick={handleAdd}>
+            新增
+          </Button>
+        </Space>
+      </div>
+      <AddAreaModal visible={modalVisible} onOk={handleOk} onClose={onClose} />
       <Table
         rowKey="id"
         loading={loading}
@@ -78,6 +102,9 @@ function SearchTable() {
         pagination={pagination}
         columns={columns}
         data={data}
+        noDataElement={
+          <Empty description="没有更多数据了" className={styles['is-empty']} />
+        }
       />
     </Card>
   );

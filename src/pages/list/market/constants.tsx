@@ -25,20 +25,22 @@ export function getColumns(
       dataIndex: 'name',
     },
     {
+      title: '阴历日期',
+      dataIndex: 'dates',
+    },
+    {
       title: '所属区域',
-      dataIndex: 'filterType',
-      render: (value) => FilterType[value],
+      dataIndex: 'region',
     },
     {
       title: '地址',
-      dataIndex: 'filterType',
-      render: (value) => FilterType[value],
+      dataIndex: 'address',
     },
     {
       title: '创建时间',
-      dataIndex: 'createdTime',
-      render: (x) => dayjs().subtract(x, 'days').format('YYYY-MM-DD HH:mm:ss'),
-      sorter: (a, b) => b.createdTime - a.createdTime,
+      dataIndex: 'createdAt',
+      render: (x) => dayjs().format('YYYY-MM-DD HH:mm:ss'),
+      sorter: (a, b) => b.createdAt - a.createdAt,
     },
     {
       title: '操作',

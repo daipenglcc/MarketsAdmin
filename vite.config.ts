@@ -35,7 +35,7 @@ export default defineConfig({
     open: true,
     proxy: {
       '/api': {
-        target: 'https://hrapi-dev.yilieyun.cn/',
+        target: 'http://localhost:7676/',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },

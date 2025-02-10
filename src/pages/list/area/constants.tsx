@@ -22,13 +22,13 @@ export function getColumns(
     },
     {
       title: '区域名称',
-      dataIndex: 'name',
+      dataIndex: 'title',
     },
     {
       title: '创建时间',
-      dataIndex: 'createdTime',
-      render: (x) => dayjs().subtract(x, 'days').format('YYYY-MM-DD HH:mm:ss'),
-      sorter: (a, b) => b.createdTime - a.createdTime,
+      dataIndex: 'createdAt',
+      render: (x) => dayjs(x).format('YYYY-MM-DD HH:mm:ss'),
+      sorter: (a, b) => b.createdAt - a.createdAt,
     },
     {
       title: '操作',
