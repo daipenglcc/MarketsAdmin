@@ -21,6 +21,12 @@ export const ContentType = ['图文', '横版短视频', '竖版短视频'];
 export const FilterType = ['规则筛选', '人工'];
 export const Status = ['已上线', '未上线'];
 
+// 在文件顶部定义 formParams 的类型
+interface FormParams {
+  name?: string;
+  areaId?: number[];
+}
+
 function SearchTable() {
   const tableCallback = async (record, type) => {
     console.log(record, type);
@@ -37,7 +43,7 @@ function SearchTable() {
     pageSizeChangeResetCurrent: true,
   });
   const [loading, setLoading] = useState(true);
-  const [formParams, setFormParams] = useState({});
+  const [formParams, setFormParams] = useState<FormParams>({});
 
   useEffect(() => {
     fetchData();
@@ -46,11 +52,13 @@ function SearchTable() {
   const fetchData = async () => {
     try {
       const { current, pageSize } = pagination;
+      const { name, areaId } = formParams; // 现在 TypeScript 知道 formParams 的结构
       setLoading(true);
       const ret: any = await getAllMerchants({
         pageIndex: current,
         pageSize,
-        ...formParams,
+        name,
+        areaId: areaId ? areaId.join(',') : '', // 确保 areaId 存在时才调用 join
       });
       setData(ret.merchants);
       setPatination({
