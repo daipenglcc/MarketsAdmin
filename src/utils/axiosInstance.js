@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Message } from '@arco-design/web-react';
 
 // 创建 Axios 实例
 const axiosInstance = axios.create({
@@ -32,9 +33,11 @@ axiosInstance.interceptors.response.use(
     if (error.response) {
       // 请求已发出，但服务器响应了状态码
       console.error('Error Response:', error.response);
+      Message.error(error.response.data.message);
     } else {
       // 其他错误
       console.error('Error Message:', error.message);
+      Message.error(error.response.data.message);
     }
     return Promise.reject(error);
   }

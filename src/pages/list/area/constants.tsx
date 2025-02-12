@@ -38,7 +38,7 @@ export function getColumns(
         <Button
           type="text"
           size="small"
-          onClick={() => callback(record, 'view')}
+          onClick={() => callback(record, 'edit')}
         >
           编辑
         </Button>

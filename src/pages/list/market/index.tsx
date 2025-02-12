@@ -40,7 +40,6 @@ function SearchTable() {
     showTotal: true,
     pageSize: 10,
     current: 1,
-    pageSizeChangeResetCurrent: true,
   });
   const [loading, setLoading] = useState(true);
   const [formParams, setFormParams] = useState<FormParams>({});

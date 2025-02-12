@@ -11,13 +11,21 @@ import {
 } from '@arco-design/web-react';
 import { getColumns } from './constants';
 import AddAreaModal from './AddAreaModal';
-import { getAreas, addArea } from '../../../api/market';
+import { getAreas, addArea, updataArea } from '../../../api/market';
 import styles from './style/index.module.less';
 import { IconPlus } from '@arco-design/web-react/icon';
 
 function SearchTable() {
+  const [selectedRecord, setSelectedRecord] = useState(null); // 新增状态来存储选中的记录
+
   const tableCallback = async (record, type) => {
-    console.log(record, type);
+    console.log(record);
+    console.log(type);
+
+    if (type === 'edit') {
+      setSelectedRecord(record); // 设置选中的记录
+      setModalVisible(true); // 显示弹窗
+    }
   };
 
   const columns = getColumns(tableCallback);
@@ -28,7 +36,6 @@ function SearchTable() {
     showTotal: true,
     pageSize: 10,
     current: 1,
-    pageSizeChangeResetCurrent: true,
   });
   const [loading, setLoading] = useState(true);
 
@@ -68,19 +75,34 @@ function SearchTable() {
     setModalVisible(true); // 显示弹窗
   };
   const handleOk = async (values) => {
+    console.log('values', values);
     try {
-      await addArea({
-        title: values.title,
-      });
-      Message.success('添加成功');
-      setModalVisible(false); // 提交成功后关闭弹窗
-      fetchData(); // 重新获取数据
+      if (!values.id) {
+        // 新增
+        await addArea({
+          title: values.title,
+        });
+      } else {
+        // 修改
+        await updataArea({
+          id: values.id,
+          title: values.title,
+        });
+      }
+
+      Message.success(`${values.id ? '修改' : '添加'}成功`);
+      setModalVisible(false);
+      setSelectedRecord(null);
+      fetchData();
+      return true;
     } catch (error) {
       console.log('error', error);
+      return false;
     }
   };
   const onClose = () => {
     setModalVisible(false); // 关闭弹窗
+    setSelectedRecord(null); // 设置选中的记录
   };
 
   return (
@@ -94,7 +116,6 @@ function SearchTable() {
           </Button>
         </Space>
       </div>
-      <AddAreaModal visible={modalVisible} onOk={handleOk} onClose={onClose} />
       <Table
         rowKey="id"
         loading={loading}
@@ -105,6 +126,12 @@ function SearchTable() {
         noDataElement={
           <Empty description="没有更多数据了" className={styles['is-empty']} />
         }
+      />
+      <AddAreaModal
+        visible={modalVisible}
+        onOk={handleOk}
+        onClose={onClose}
+        record={selectedRecord} // 传递选中的记录
       />
     </Card>
   );
