@@ -39,7 +39,7 @@ export function getColumns(
     {
       title: '创建时间',
       dataIndex: 'createdAt',
-      render: (x) => dayjs().format('YYYY-MM-DD HH:mm:ss'),
+      render: (x) => dayjs(x).format('YYYY-MM-DD HH:mm:ss'),
       sorter: (a, b) => b.createdAt - a.createdAt,
     },
     {

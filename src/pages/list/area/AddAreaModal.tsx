@@ -4,7 +4,6 @@ import { Modal, Form, Input } from '@arco-design/web-react';
 const AddAreaModal = ({ visible, onOk, onClose, record }) => {
   const [form] = Form.useForm();
 
-  console.log('record', record);
   useEffect(() => {
     if (visible && record) {
       form.setFieldsValue({
@@ -22,7 +21,7 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
           id: record.id,
         };
       }
-      let ret = await onOk(values); // 调用父组件传入的 onOk
+      const ret = await onOk(values); // 调用父组件传入的 onOk
       if (ret) {
         form.resetFields(); // 重置表单
       }

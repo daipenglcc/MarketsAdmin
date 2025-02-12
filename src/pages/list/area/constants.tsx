@@ -1,8 +1,5 @@
 import React from 'react';
 import { Button, Typography, Badge } from '@arco-design/web-react';
-// import IconText from './icons/text.svg';
-// import IconHorizontalVideo from './icons/horizontal.svg';
-// import IconVerticalVideo from './icons/vertical.svg';
 import dayjs from 'dayjs';
 import styles from './style/index.module.less';
 
@@ -46,5 +43,3 @@ export function getColumns(
     },
   ];
 }
-
-// export default () => ContentIcon;

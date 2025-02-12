@@ -75,7 +75,6 @@ function SearchTable() {
     setModalVisible(true); // 显示弹窗
   };
   const handleOk = async (values) => {
-    console.log('values', values);
     try {
       if (!values.id) {
         // 新增
