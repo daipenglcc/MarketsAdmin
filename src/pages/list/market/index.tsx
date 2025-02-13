@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
+  Message,
   Table,
   Card,
   PaginationProps,
@@ -7,14 +8,15 @@ import {
   Space,
   Typography,
 } from '@arco-design/web-react';
-import PermissionWrapper from '@/components/PermissionWrapper';
-import { IconDownload, IconPlus } from '@arco-design/web-react/icon';
+import { IconPlus } from '@arco-design/web-react/icon';
 import axios from 'axios';
 import SearchForm from './form';
 import { getAllMerchants } from '../../../api/market';
 import styles from './style/index.module.less';
 import './mock';
 import { getColumns } from './constants';
+import AddAreaModal from './AddAreaModal';
+import { getAreas, addArea, updataArea } from '../../../api/market';
 
 const { Title } = Typography;
 export const ContentType = ['图文', '横版短视频', '竖版短视频'];
@@ -28,6 +30,8 @@ interface FormParams {
 }
 
 function SearchTable() {
+  const [selectedRecord, setSelectedRecord] = useState(null); // 新增状态来存储选中的记录
+
   const tableCallback = async (record, type) => {
     console.log(record, type);
   };
@@ -81,10 +85,45 @@ function SearchTable() {
     });
   }
 
+  const [modalVisible, setModalVisible] = useState(false); // 控制弹窗显示
+  const handleAdd = () => {
+    setModalVisible(true); // 显示弹窗
+  };
+
   function handleSearch(params) {
     setPatination({ ...pagination, current: 1 });
     setFormParams(params);
   }
+
+  const handleOk = async (values) => {
+    try {
+      if (!values.id) {
+        // 新增
+        await addArea({
+          title: values.title,
+        });
+      } else {
+        // 修改
+        await updataArea({
+          id: values.id,
+          title: values.title,
+        });
+      }
+
+      Message.success(`${values.id ? '修改' : '添加'}成功`);
+      setModalVisible(false);
+      setSelectedRecord(null);
+      fetchData();
+      return true;
+    } catch (error) {
+      console.log('error', error);
+      return false;
+    }
+  };
+  const onClose = () => {
+    setModalVisible(false); // 关闭弹窗
+    setSelectedRecord(null); // 设置选中的记录
+  };
 
   return (
     <Card>
@@ -92,7 +131,7 @@ function SearchTable() {
       <SearchForm onSearch={handleSearch} />
       <div className={styles['button-group']}>
         <Space>
-          <Button type="primary" icon={<IconPlus />}>
+          <Button type="primary" icon={<IconPlus />} onClick={handleAdd}>
             新增
           </Button>
         </Space>
@@ -104,6 +143,12 @@ function SearchTable() {
         pagination={pagination}
         columns={columns}
         data={data}
+      />
+      <AddAreaModal
+        visible={modalVisible}
+        onOk={handleOk}
+        onClose={onClose}
+        record={selectedRecord} // 传递选中的记录
       />
     </Card>
   );
