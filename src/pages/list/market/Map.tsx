@@ -1,5 +1,6 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { TMap } from 'tlbs-map-react';
+import styles from './style/map.module.less';
 
 const MapIndex = ({ onGetPosition }) => {
   const mapRef = useRef<any>();
@@ -20,7 +21,7 @@ const MapIndex = ({ onGetPosition }) => {
   };
 
   return (
-    <div className="demo-box">
+    <div className={styles['demo-box']}>
       <TMap
         ref={mapRef}
         apiKey="Y6FBZ-DUOLQ-TDY5C-2C3NN-RQQYO-4SBHB"

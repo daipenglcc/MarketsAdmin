@@ -85,7 +85,7 @@ function SearchTable() {
     });
   }
 
-  const [modalVisible, setModalVisible] = useState(false); // 控制弹窗显示
+  const [modalVisible, setModalVisible] = useState(true); // 控制弹窗显示
   const handleAdd = () => {
     setModalVisible(true); // 显示弹窗
   };

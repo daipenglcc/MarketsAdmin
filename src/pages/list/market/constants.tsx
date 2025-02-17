@@ -10,6 +10,48 @@ const { Text } = Typography;
 
 export const ContentType = ['图文', '横版短视频', '竖版短视频'];
 export const FilterType = ['规则筛选', '人工'];
+export const datesList = [
+  {
+    label: '逢一',
+    value: '一',
+  },
+  {
+    label: '逢二',
+    value: '二',
+  },
+  {
+    label: '逢三',
+    value: '三',
+  },
+  {
+    label: '逢四',
+    value: '四',
+  },
+  {
+    label: '逢五',
+    value: '五',
+  },
+  {
+    label: '逢六',
+    value: '六',
+  },
+  {
+    label: '逢七',
+    value: '七',
+  },
+  {
+    label: '逢八',
+    value: '八',
+  },
+  {
+    label: '逢九',
+    value: '九',
+  },
+  {
+    label: '逢十',
+    value: '十',
+  },
+];
 
 export function getColumns(
   callback: (record: Record<string, any>, type: string) => Promise<void>

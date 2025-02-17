@@ -1,7 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Modal, Form, Input, Spin } from '@arco-design/web-react';
+import {
+  Modal,
+  Form,
+  Input,
+  Spin,
+  Select,
+  Checkbox,
+  Tag,
+} from '@arco-design/web-react';
 import Map from './Map';
 import styles from './style/map.module.less';
+import { datesList } from './constants';
 
 const AddAreaModal = ({ visible, onOk, onClose, record }) => {
   const [form] = Form.useForm();
@@ -23,6 +32,8 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
           id: record.id,
         };
       }
+
+      console.log('values', values);
       const ret = await onOk(values); // 调用父组件传入的 onOk
       if (ret) {
         form.resetFields(); // 重置表单
@@ -55,18 +66,94 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
         cancelText="取消"
         style={{ width: '1000px' }}
       >
-        {/* <Form form={form} scrollToFirstError>
+        <Form style={{ width: '100%' }} form={form} scrollToFirstError>
           <Form.Item
             label="大集名称"
             field="title"
+            labelCol={{ span: 3 }}
             rules={[{ required: true, message: '请输入大集名称' }]}
           >
-            <Input placeholder="请输入大集名称" />
+            <Input
+              style={{ width: 200 }}
+              placeholder="请输入大集名称"
+              allowClear
+            />
           </Form.Item>
-        </Form> */}
-        <Spin tip="loading Data..." loading={loading}>
-          <Map onGetPosition={onGetPosition}></Map>
-        </Spin>
+          <Form.Item
+            label="所属地区"
+            field="area_id"
+            labelCol={{ span: 3 }}
+            rules={[{ required: true, message: '请选择所属地区' }]}
+          >
+            <Select
+              style={{ width: 200 }}
+              placeholder="请选择所属地区"
+              options={[
+                {
+                  label: 'one',
+                  value: 0,
+                },
+                {
+                  label: 'two',
+                  value: 1,
+                },
+                {
+                  label: 'three',
+                  value: 2,
+                },
+              ]}
+              allowClear
+            />
+          </Form.Item>
+          <Form.Item
+            label="阴历日期"
+            field="dates"
+            labelCol={{ span: 3 }}
+            rules={[{ required: true, message: '请选择阴历日期' }]}
+          >
+            <Checkbox.Group defaultValue={['Beijing']}>
+              {datesList.map((item) => {
+                return (
+                  <Checkbox key={item.value} value={item.value}>
+                    {({ checked }) => {
+                      return (
+                        <Tag key={item.value} color={checked ? 'arcoblue' : ''}>
+                          {item.label}
+                        </Tag>
+                      );
+                    }}
+                  </Checkbox>
+                );
+              })}
+            </Checkbox.Group>
+          </Form.Item>
+          <Form.Item
+            label="地址"
+            field="address"
+            labelCol={{ span: 3 }}
+            rules={[{ required: true, message: '请输入地址' }]}
+          >
+            <Input style={{ width: 400 }} placeholder="请输入地址" allowClear />
+          </Form.Item>
+          {/* <Form.Item
+            label="公交方式"
+            field="title"
+            labelCol={{ span: 3 }}
+            rules={[{ required: true, message: '请输入公交方式' }]}
+          >
+            <Input style={{ width: 400 }} placeholder="请输入公交方式" />
+          </Form.Item> */}
+          <Form.Item
+            label="坐标拾取"
+            field="title"
+            labelCol={{ span: 3 }}
+            rules={[{ required: true, message: '请输入大集名称' }]}
+          >
+            <Spin tip="loading Data..." loading={loading}>
+              <Map onGetPosition={onGetPosition}></Map>
+            </Spin>
+          </Form.Item>
+        </Form>
       </Modal>
     </>
   );
