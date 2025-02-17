@@ -44,7 +44,7 @@ export default function LoginForm() {
     setErrorMessage('');
     setLoading(true);
     try {
-      let userInfo = await loginApi({
+      const userInfo = await loginApi({
         username: params.userName,
         password: params.password,
       });

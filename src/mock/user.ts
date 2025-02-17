@@ -4,7 +4,7 @@ import setupMock from '@/utils/setupMock';
 import { generatePermission } from '@/routes';
 
 if (!isSSR) {
-  Mock.XHR.prototype.withCredentials = true;
+  // Mock.XHR.prototype.withCredentials = true;
 
   setupMock({
     setup: () => {
