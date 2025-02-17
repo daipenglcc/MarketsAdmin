@@ -2,6 +2,7 @@ import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { TMap, MultiMarker } from 'tlbs-map-react';
 import styles2 from './style/map.module.less';
 
+const addObj = { lat: 39.908820249133356, lng: 116.39747208772576 };
 const styles = {
   multiMarkerStyle1: {
     width: 20,
@@ -9,18 +10,16 @@ const styles = {
     anchor: { x: 10, y: 30 },
   },
 };
-
 const geometriesData1 = [
   {
     styleId: 'multiMarkerStyle1',
-    position: { lat: 40.0404, lng: 116.2735 },
+    position: addObj,
   },
 ];
 
 const MapIndex = ({ onGetPosition }) => {
   const mapRef = useRef<any>();
-  const [center, setCenter] = useState({ lat: 40.0404, lng: 116.2735 });
-  const [showControl, setShowControl] = useState(true);
+  const [center, setCenter] = useState(addObj);
   const [geometries, setGeometries] = useState(geometriesData1);
 
   /**
@@ -30,8 +29,15 @@ const MapIndex = ({ onGetPosition }) => {
   const clickHandler = useCallback(
     (event: any) => {
       console.log('🚀🚀🚀 地图点击事件', event);
-      setGeometries(geometriesData1);
+
       const { lat, lng } = event.latLng;
+      setCenter({ lat, lng });
+      setGeometries([
+        {
+          styleId: 'multiMarkerStyle1',
+          position: { lat, lng },
+        },
+      ]);
       onGetPosition({ lat, lng }); // 将经纬度传递给父组件
     },
     [onGetPosition]
@@ -50,7 +56,6 @@ const MapIndex = ({ onGetPosition }) => {
         options={{
           center,
           zoom: 17,
-          showControl,
         }}
         onClick={clickHandler}
         onError={handleError}
