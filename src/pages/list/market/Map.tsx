@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
-import { TMap } from 'tlbs-map-react';
+import { TMap, MultiMarker } from 'tlbs-map-react';
 import styles2 from './style/map.module.less';
 
 const styles = {
@@ -7,14 +7,7 @@ const styles = {
     width: 20,
     height: 30,
     anchor: { x: 10, y: 30 },
-    src: 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/markerDefault.png',
   },
-  // multiMarkerStyle2: {
-  //   width: 20,
-  //   height: 30,
-  //   anchor: { x: 10, y: 30 },
-  //   src: 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/markerDefault.png',
-  // },
 };
 
 const geometriesData1 = [
@@ -35,7 +28,7 @@ const MapIndex = ({ onGetPosition }) => {
    * @param event
    */
   const clickHandler = useCallback(
-    (event: TMap.MapEvent) => {
+    (event: any) => {
       console.log('🚀🚀🚀 地图点击事件', event);
       setGeometries(geometriesData1);
       const { lat, lng } = event.latLng;
@@ -54,23 +47,16 @@ const MapIndex = ({ onGetPosition }) => {
       <TMap
         ref={mapRef}
         apiKey="Y6FBZ-DUOLQ-TDY5C-2C3NN-RQQYO-4SBHB"
-        // control={{
-        //   zoom: {
-        //     position: 'topRight',
-        //     className: 'tmap-zoom-control-box',
-        //     numVisible: true,
-        //   },
-        // }}
-        // options={{
-        //   center,
-        //   zoom: 17,
-        //   showControl,
-        // }}
-        styles={styles}
-        geometries={geometries}
+        options={{
+          center,
+          zoom: 17,
+          showControl,
+        }}
         onClick={clickHandler}
         onError={handleError}
-      />
+      >
+        <MultiMarker styles={styles} geometries={geometries} />
+      </TMap>
     </div>
   );
 };
