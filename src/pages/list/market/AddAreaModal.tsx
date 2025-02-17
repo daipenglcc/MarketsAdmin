@@ -7,6 +7,7 @@ import {
   Select,
   Checkbox,
   Tag,
+  Button,
 } from '@arco-design/web-react';
 import Map from './Map';
 import styles from './style/map.module.less';
@@ -152,6 +153,16 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
             labelCol={{ span: 3 }}
             rules={[{ required: true, message: '请输入大集名称' }]}
           >
+            <div style={{ marginBottom: '20px' }}>
+              <Input
+                style={{ width: 200 }}
+                placeholder="请输入位置"
+                allowClear
+              />
+              <Button type="primary" style={{ marginLeft: '10px' }}>
+                定位
+              </Button>
+            </div>
             <Spin tip="loading Data..." loading={loading}>
               <Map onGetPosition={onGetPosition}></Map>
             </Spin>
