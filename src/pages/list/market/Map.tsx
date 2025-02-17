@@ -1,19 +1,48 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { TMap } from 'tlbs-map-react';
-import styles from './style/map.module.less';
+import styles2 from './style/map.module.less';
+
+const styles = {
+  multiMarkerStyle1: {
+    width: 20,
+    height: 30,
+    anchor: { x: 10, y: 30 },
+    src: 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/markerDefault.png',
+  },
+  // multiMarkerStyle2: {
+  //   width: 20,
+  //   height: 30,
+  //   anchor: { x: 10, y: 30 },
+  //   src: 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/markerDefault.png',
+  // },
+};
+
+const geometriesData1 = [
+  {
+    styleId: 'multiMarkerStyle1',
+    position: { lat: 40.0404, lng: 116.2735 },
+  },
+];
 
 const MapIndex = ({ onGetPosition }) => {
   const mapRef = useRef<any>();
   const [center, setCenter] = useState({ lat: 40.0404, lng: 116.2735 });
   const [showControl, setShowControl] = useState(true);
+  const [geometries, setGeometries] = useState(geometriesData1);
 
   /**
    * 地图点击事件处理器
    * @param event
    */
-  const clickHandler = useCallback((event: TMap.MapEvent) => {
-    console.log('🚀🚀🚀 地图点击事件', event);
-  }, []);
+  const clickHandler = useCallback(
+    (event: TMap.MapEvent) => {
+      console.log('🚀🚀🚀 地图点击事件', event);
+      setGeometries(geometriesData1);
+      const { lat, lng } = event.latLng;
+      onGetPosition({ lat, lng }); // 将经纬度传递给父组件
+    },
+    [onGetPosition]
+  );
 
   // 添加错误处理逻辑
   const handleError = (error: any) => {
@@ -21,22 +50,24 @@ const MapIndex = ({ onGetPosition }) => {
   };
 
   return (
-    <div className={styles['demo-box']}>
+    <div className={styles2['demo-box']}>
       <TMap
         ref={mapRef}
         apiKey="Y6FBZ-DUOLQ-TDY5C-2C3NN-RQQYO-4SBHB"
-        control={{
-          zoom: {
-            position: 'topRight',
-            className: 'tmap-zoom-control-box',
-            numVisible: true,
-          },
-        }}
-        options={{
-          center,
-          zoom: 17,
-          showControl,
-        }}
+        // control={{
+        //   zoom: {
+        //     position: 'topRight',
+        //     className: 'tmap-zoom-control-box',
+        //     numVisible: true,
+        //   },
+        // }}
+        // options={{
+        //   center,
+        //   zoom: 17,
+        //   showControl,
+        // }}
+        styles={styles}
+        geometries={geometries}
         onClick={clickHandler}
         onError={handleError}
       />

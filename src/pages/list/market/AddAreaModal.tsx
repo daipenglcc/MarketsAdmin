@@ -65,9 +65,11 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
     await onClose();
   };
 
+  const [position, setPosition] = useState({ lat: '', lng: '' }); // 新增状态以存储经纬度
+
   const onGetPosition = (position) => {
     console.log('获取到的位置:', position);
-    // 这里可以处理获取到的位置
+    setPosition(position); // 更新经纬度状态
   };
 
   const [loading, setLoading] = React.useState(false); // table
@@ -149,14 +151,21 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
           </Form.Item> */}
           <Form.Item
             label="坐标拾取"
-            field="title"
+            field="coordinates"
             labelCol={{ span: 3 }}
-            rules={[{ required: true, message: '请输入大集名称' }]}
+            rules={[{ required: true, message: '请输入坐标' }]}
           >
             <div style={{ marginBottom: '20px' }}>
               <Input
                 style={{ width: 200 }}
-                placeholder="请输入位置"
+                placeholder="纬度"
+                value={position.lat} // 显示纬度
+                allowClear
+              />
+              <Input
+                style={{ width: 200, marginLeft: '10px' }}
+                placeholder="经度"
+                value={position.lng} // 显示经度
                 allowClear
               />
               <Button type="primary" style={{ marginLeft: '10px' }}>
