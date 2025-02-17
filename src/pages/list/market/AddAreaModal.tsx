@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Modal, Form, Input } from '@arco-design/web-react';
+import { Modal, Form, Input, Spin } from '@arco-design/web-react';
 import Map from './Map';
 import styles from './style/map.module.less';
 
@@ -42,6 +42,8 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
     // 这里可以处理获取到的位置
   };
 
+  const [loading, setLoading] = React.useState(false); // table
+
   return (
     <>
       <Modal
@@ -62,9 +64,9 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
             <Input placeholder="请输入大集名称" />
           </Form.Item>
         </Form> */}
-        <div>
+        <Spin tip="loading Data..." loading={loading}>
           <Map onGetPosition={onGetPosition}></Map>
-        </div>
+        </Spin>
       </Modal>
     </>
   );

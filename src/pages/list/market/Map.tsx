@@ -1,15 +1,10 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { TMap } from 'tlbs-map-react';
 
 const MapIndex = ({ onGetPosition }) => {
   const mapRef = useRef<any>();
   const [center, setCenter] = useState({ lat: 40.0404, lng: 116.2735 });
   const [showControl, setShowControl] = useState(true);
-
-  /** 打印地图实例 */
-  const printInstance = useCallback(() => {
-    console.log('🚀🚀🚀  打印地图实例', mapRef.current);
-  }, []);
 
   /**
    * 地图点击事件处理器
