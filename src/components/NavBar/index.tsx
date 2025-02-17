@@ -92,7 +92,7 @@ function Navbar({ show }: { show: boolean }) {
     <Menu onClickMenuItem={onMenuItemClick}>
       <Menu.Item key="logout">
         <IconPoweroff className={styles['dropdown-icon']} />
-        {t['navbar.logout']}
+        退出登录
       </Menu.Item>
     </Menu>
   );
@@ -128,7 +128,8 @@ function Navbar({ show }: { show: boolean }) {
                 {userLoading ? (
                   <IconLoading />
                 ) : (
-                  <img alt="avatar" src={userInfo.avatar} />
+                  // <img alt="avatar" src={require('@/assets/cat.jpg')} />
+                  <img alt="avatar" src="../../assets/cat.jpg" />
                 )}
               </Avatar>
             </Dropdown>

@@ -13,6 +13,7 @@ import axios from 'axios';
 import useStorage from '@/utils/useStorage';
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
+import { loginApi } from '../../api/user';
 import styles from './style/index.module.less';
 
 export default function LoginForm() {
@@ -26,10 +27,10 @@ export default function LoginForm() {
 
   const [rememberPassword, setRememberPassword] = useState(!!loginParams);
 
-  function afterLoginSuccess(params) {
+  function afterLoginSuccess(userInfo) {
     // 记住密码
     if (rememberPassword) {
-      setLoginParams(JSON.stringify(params));
+      setLoginParams(JSON.stringify(userInfo));
     } else {
       removeLoginParams();
     }
@@ -39,28 +40,32 @@ export default function LoginForm() {
     window.location.href = '/';
   }
 
-  function login(params) {
+  const toLogin = async (params: any) => {
     setErrorMessage('');
     setLoading(true);
-    axios
-      .post('/api/user/login', params)
-      .then((res) => {
-        const { status, msg } = res.data;
-        if (status === 'ok') {
-          afterLoginSuccess(params);
-        } else {
-          setErrorMessage(msg || t['login.form.login.errMsg']);
-        }
-      })
-      .finally(() => {
-        setLoading(false);
+    try {
+      let userInfo = await loginApi({
+        username: params.userName,
+        password: params.password,
       });
-  }
+      console.log('ret', userInfo);
+      afterLoginSuccess(userInfo);
+    } catch (error) {
+      setLoading(false);
+      console.log('error:', error);
+    }
+  };
 
   function onSubmitClick() {
-    formRef.current.validate().then((values) => {
-      login(values);
-    });
+    formRef.current
+      .validate()
+      .then((values) => {
+        toLogin(values);
+      })
+      .catch((error) => {
+        console.error('表单验证失败:', error);
+        console.log('验证失败的字段:', error.fields);
+      });
   }
 
   // 读取 localStorage，设置初始值
@@ -79,49 +84,41 @@ export default function LoginForm() {
       <div className={styles['login-form-sub-title']}>
         {t['login.form.title']}
       </div>
-      <div className={styles['login-form-error-msg']}>{errorMessage}</div>
+      <div className={styles['login-form-error-msg']}></div>
       <Form
         className={styles['login-form']}
         layout="vertical"
         ref={formRef}
-        initialValues={{ userName: 'admin', password: 'admin' }}
+        initialValues={{ userName: '', password: '' }}
       >
         <Form.Item
           field="userName"
-          rules={[{ required: true, message: t['login.form.userName.errMsg'] }]}
+          rules={[{ required: true, message: '请输入用户名' }]}
         >
           <Input
             prefix={<IconUser />}
-            placeholder={t['login.form.userName.placeholder']}
+            placeholder="用户名"
             onPressEnter={onSubmitClick}
           />
         </Form.Item>
         <Form.Item
           field="password"
-          rules={[{ required: true, message: t['login.form.password.errMsg'] }]}
+          rules={[{ required: true, message: '请输入密码' }]}
         >
           <Input.Password
             prefix={<IconLock />}
-            placeholder={t['login.form.password.placeholder']}
+            placeholder="密码"
             onPressEnter={onSubmitClick}
           />
         </Form.Item>
         <Space size={16} direction="vertical">
           <div className={styles['login-form-password-actions']}>
             <Checkbox checked={rememberPassword} onChange={setRememberPassword}>
-              {t['login.form.rememberPassword']}
+              记住密码
             </Checkbox>
-            <Link>{t['login.form.forgetPassword']}</Link>
           </div>
           <Button type="primary" long onClick={onSubmitClick} loading={loading}>
-            {t['login.form.login']}
-          </Button>
-          <Button
-            type="text"
-            long
-            className={styles['login-form-register-btn']}
-          >
-            {t['login.form.register']}
+            登录
           </Button>
         </Space>
       </Form>

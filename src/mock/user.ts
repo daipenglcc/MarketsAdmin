@@ -33,7 +33,7 @@ if (!isSSR) {
       });
 
       // 登录
-      Mock.mock(new RegExp('/api/user/login'), (params) => {
+      Mock.mock(new RegExp('/api/user2/login'), (params) => {
         const { userName, password } = JSON.parse(params.body);
         if (!userName) {
           return {
