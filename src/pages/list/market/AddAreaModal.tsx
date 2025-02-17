@@ -11,6 +11,7 @@ import {
 import Map from './Map';
 import styles from './style/map.module.less';
 import { datesList } from './constants';
+import { getAreas } from '../../../api/market';
 
 const AddAreaModal = ({ visible, onOk, onClose, record }) => {
   const [form] = Form.useForm();
@@ -22,6 +23,21 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
       });
     }
   }, [visible, record]); // 依赖于 visible 和 record
+
+  const [areaOptions, setAreaOptions] = useState([]); // 新增状态以存储地区选项
+  useEffect(() => {
+    const fetchAreas = async () => {
+      const ret: any = await getAreas();
+      setAreaOptions(
+        ret.areas.map((item: any) => ({
+          label: item.title,
+          value: item.id,
+        }))
+      );
+    };
+
+    fetchAreas(); // 组件加载时调用接口
+  }, []); // 只在组件挂载时调用
 
   const handleOk = async () => {
     try {
@@ -88,20 +104,7 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
             <Select
               style={{ width: 200 }}
               placeholder="请选择所属地区"
-              options={[
-                {
-                  label: 'one',
-                  value: 0,
-                },
-                {
-                  label: 'two',
-                  value: 1,
-                },
-                {
-                  label: 'three',
-                  value: 2,
-                },
-              ]}
+              options={areaOptions} // 使用从接口获取的地区选项
               allowClear
             />
           </Form.Item>
