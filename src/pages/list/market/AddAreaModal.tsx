@@ -65,10 +65,12 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
     await onClose();
   };
 
-  const [position, setPosition] = useState({ lat: '', lng: '' }); // 新增状态以存储经纬度
+  const [position, setPosition] = useState({
+    lat: '39.908820249133356',
+    lng: '116.39747208772576',
+  });
 
   const onGetPosition = (position) => {
-    console.log('获取到的位置:', position);
     setPosition(position); // 更新经纬度状态
   };
 
@@ -156,24 +158,28 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
             rules={[{ required: true, message: '请输入坐标' }]}
           >
             <div style={{ marginBottom: '20px' }}>
+              <Input style={{ width: 200 }} placeholder="请输入" allowClear />
+              <Button
+                type="primary"
+                style={{ marginLeft: '10px', marginRight: '10px' }}
+              >
+                定位
+              </Button>
               <Input
                 style={{ width: 200 }}
                 placeholder="纬度"
                 value={position.lat} // 显示纬度
-                allowClear
+                disabled
               />
               <Input
                 style={{ width: 200, marginLeft: '10px' }}
                 placeholder="经度"
                 value={position.lng} // 显示经度
-                allowClear
+                disabled
               />
-              <Button type="primary" style={{ marginLeft: '10px' }}>
-                定位
-              </Button>
             </div>
             <Spin tip="loading Data..." loading={loading}>
-              <Map onGetPosition={onGetPosition}></Map>
+              <Map positionData={position} onGetPosition={onGetPosition}></Map>
             </Spin>
           </Form.Item>
         </Form>
