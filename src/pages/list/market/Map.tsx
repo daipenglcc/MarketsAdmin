@@ -1,9 +1,15 @@
-import React, { useState, useEffect, useRef, useImperativeHandle } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  forwardRef,
+  useImperativeHandle,
+} from 'react';
 import styles from './style/map.module.less';
 
 const TMapAPIKey = 'Y6FBZ-DUOLQ-TDY5C-2C3NN-RQQYO-4SBHB'; // 在这里填入您的腾讯地图API key
 
-const MapComponent = ({ positionData, onGetPosition }, ref) => {
+const MapComponent = forwardRef(({ positionData, onGetPosition }, ref) => {
   const mapRef = useRef(null);
   const [center, setCenter] = useState(positionData);
   const [map, setMap] = useState(null);
@@ -72,7 +78,7 @@ const MapComponent = ({ positionData, onGetPosition }, ref) => {
     });
 
     setMap(map);
-    setMap(marker);
+    setMarker(marker);
 
     // 创建关键字输入提示类
     const suggest = new TMap.service.Suggestion({
@@ -84,22 +90,18 @@ const MapComponent = ({ positionData, onGetPosition }, ref) => {
     // 创建搜索类
     const search = new TMap.service.Search({ pageSize: 10 });
 
-    // markers.current = new TMap.MultiMarker({
-    //   map,
-    //   geometries: [],
-    // });
     setSearch(search);
     setSuggest(suggest);
-    // searchByKeyword();
   };
 
   // 地图搜索
 
   const searchByKeyword = () => {
+    console.log('positionData', positionData);
     marker.setGeometries([]);
-    search.current
+    search
       .searchRectangle({
-        keyword: '西二旗',
+        keyword: '天安门',
         bounds: map.getBounds(),
       })
       .then((result) => {
@@ -108,9 +110,9 @@ const MapComponent = ({ positionData, onGetPosition }, ref) => {
       });
   };
 
-  // useImperativeHandle(ref, () => ({
-  //   searchByKeyword, // 暴露方法
-  // }));
+  useImperativeHandle(ref, () => ({
+    searchByKeyword, // 暴露方法
+  }));
 
   return (
     <div
@@ -119,6 +121,6 @@ const MapComponent = ({ positionData, onGetPosition }, ref) => {
       style={{ width: '100%', height: '100vh' }}
     ></div>
   );
-};
+});
 
 export default MapComponent;

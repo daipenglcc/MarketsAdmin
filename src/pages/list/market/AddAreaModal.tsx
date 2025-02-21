@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Modal,
   Form,
@@ -75,6 +75,12 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
   };
 
   const [loading, setLoading] = React.useState(false); // table
+  const mapRef = useRef(null); // 创建 ref
+  const areaSearch = () => {
+    if (mapRef.current) {
+      mapRef.current.searchByKeyword(); // 调用子组件的方法
+    }
+  };
 
   return (
     <>
@@ -162,6 +168,7 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
               <Button
                 type="primary"
                 style={{ marginLeft: '10px', marginRight: '10px' }}
+                onClick={areaSearch}
               >
                 定位
               </Button>
@@ -179,7 +186,11 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
               />
             </div>
             <Spin tip="loading Data..." loading={loading}>
-              <Map positionData={position} onGetPosition={onGetPosition}></Map>
+              <Map
+                ref={mapRef}
+                positionData={position}
+                onGetPosition={onGetPosition}
+              ></Map>
             </Spin>
           </Form.Item>
         </Form>
