@@ -1,66 +1,68 @@
-import React, { useCallback, useRef, useState, useEffect } from 'react';
-import { TMap, MultiMarker } from 'tlbs-map-react';
-import styles2 from './style/map.module.less';
+import React, { useState, useEffect, useRef } from 'react';
+import styles from './style/map.module.less';
 
-const styles = {
-  multiMarkerStyle1: {
-    width: 20,
-    height: 30,
-    anchor: { x: 10, y: 30 },
-  },
-};
+const TMapAPIKey = 'Y6FBZ-DUOLQ-TDY5C-2C3NN-RQQYO-4SBHB'; // 在这里填入您的腾讯地图API key
 
-const MapIndex = ({ positionData, onGetPosition }) => {
-  const mapRef = useRef<any>();
+const MapComponent = ({ positionData, onGetPosition }, ref) => {
   const [center, setCenter] = useState(positionData);
-  const [geometries, setGeometries] = useState([
-    {
-      styleId: 'multiMarkerStyle1',
-      position: positionData,
-    },
-  ]);
+  const [map, setMap] = useState(null);
+  const [marker, setMarker] = useState(null);
+  const mapRef = useRef(null);
 
-  /**
-   * 地图点击事件处理器
-   * @param event
-   */
-  const clickHandler = useCallback(
-    (event: any) => {
-      console.log('🚀🚀🚀 地图点击事件', event);
-      const { lat, lng } = event.latLng;
-      setCenter({ lat, lng });
-      setGeometries([
+  useEffect(() => {
+    // 加载腾讯地图API
+    const script = document.createElement('script');
+    script.src = `https://map.qq.com/api/gljs?v=1.exp&libraries=service&key=${TMapAPIKey}`;
+    script.async = true;
+    script.onload = initMap;
+    document.body.appendChild(script);
+  }, []);
+
+  const initMap = () => {
+    const map = new TMap.Map(mapRef.current, {
+      zoom: 14,
+      center: new TMap.LatLng(center.lat, center.lng),
+    });
+
+    const marker = new TMap.MultiMarker({
+      map: map,
+      styles: {
+        // 点标记样式
+        marker: new TMap.MarkerStyle({
+          width: 20, // 样式宽
+          height: 30, // 样式高
+          anchor: { x: 10, y: 30 }, // 描点位置
+        }),
+      },
+      geometries: [
+        // 点标记数据数组
         {
-          styleId: 'multiMarkerStyle1',
-          position: { lat, lng },
+          // 标记位置(纬度，经度，高度)
+          position: new TMap.LatLng(center.lat, center.lng),
+          id: 'marker',
         },
-      ]);
-      onGetPosition({ lat, lng }); // 将经纬度传递给父组件
-    },
-    [onGetPosition]
-  );
+      ],
+    });
 
-  // 添加错误处理逻辑
-  const handleError = (error: any) => {
-    console.error('地图加载错误:', error);
+    // 点击地图添加点
+    map.on('click', (evt) => {
+      setCenter({
+        lat: evt.latLng.lat,
+        lng: evt.latLng.lng,
+      });
+    });
+
+    setMap(map);
+    setMarker(marker);
   };
 
   return (
-    <div className={styles2['demo-box']}>
-      <TMap
-        ref={mapRef}
-        apiKey="Y6FBZ-DUOLQ-TDY5C-2C3NN-RQQYO-4SBHB"
-        options={{
-          center,
-          zoom: 17,
-        }}
-        onClick={clickHandler}
-        onError={handleError}
-      >
-        <MultiMarker styles={styles} geometries={geometries} />
-      </TMap>
-    </div>
+    <div
+      className={styles['demo-box']}
+      ref={mapRef}
+      style={{ width: '100%', height: '100vh' }}
+    ></div>
   );
 };
 
-export default MapIndex;
+export default MapComponent;
