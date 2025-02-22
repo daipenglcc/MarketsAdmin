@@ -18,11 +18,9 @@ interface MapComponentProps {
 const MapComponent = forwardRef(
   ({ positionData, onGetPosition }: MapComponentProps, ref) => {
     const mapRef = useRef(null);
-    const [center, setCenter] = useState(positionData);
     const [map, setMap] = useState(null);
     const [marker, setMarker] = useState(null);
     const [search, setSearch] = useState(null);
-    // const search = useRef(null);
 
     useEffect(() => {
       // 加载腾讯地图API
@@ -36,7 +34,7 @@ const MapComponent = forwardRef(
     const initMap = () => {
       const map = new TMap.Map(mapRef.current, {
         zoom: 17,
-        center: new TMap.LatLng(center.lat, center.lng),
+        center: new TMap.LatLng(positionData.lat, positionData.lng),
       });
 
       const marker = new TMap.MultiMarker({
@@ -54,18 +52,13 @@ const MapComponent = forwardRef(
           {
             id: 'marker1',
             styleId: 'style1', //指定样式id
-            position: new TMap.LatLng(center.lat, center.lng), //点标记坐标位置
+            position: new TMap.LatLng(positionData.lat, positionData.lng), //点标记坐标位置
           },
         ],
       });
 
       // 点击地图添加点
       map.on('click', (evt) => {
-        setCenter({
-          lat: evt.latLng.lat,
-          lng: evt.latLng.lng,
-        });
-
         // 将经纬度传递给父组件
         onGetPosition({ lat: evt.latLng.lat, lng: evt.latLng.lng });
 
@@ -82,12 +75,11 @@ const MapComponent = forwardRef(
         ]);
       });
 
-      setMap(map);
-      setMarker(marker);
-
       // 创建搜索类
       const search = new TMap.service.Search({ pageSize: 10 });
 
+      setMap(map);
+      setMarker(marker);
       setSearch(search);
     };
 
@@ -132,7 +124,7 @@ const MapComponent = forwardRef(
 
     return (
       <>
-        <div className={styles['demo-box']} ref={mapRef}></div>
+        <div className={styles['map-box']} ref={mapRef}></div>
         {areaList.length > 0 && (
           <div className={styles['map-list']}>
             <List

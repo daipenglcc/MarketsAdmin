@@ -47,15 +47,23 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
   const handleOk = async () => {
     try {
       let values = await formRef.validate();
+      console.log('values', values);
+      let objData = {
+        name: values.name,
+        area_id: values.area_id,
+        region: values.area_id,
+        dates: values.dates,
+        position: position,
+      };
+      return;
       if (record) {
-        values = {
-          ...values,
+        objData = {
+          ...objData,
           id: record.id,
         };
       }
 
-      console.log('values', values);
-      const ret = await onOk(values); // 调用父组件传入的 onOk
+      const ret = await onOk(objData); // 调用父组件传入的 onOk
       if (ret) {
         formRef.resetFields(); // 重置表单
       }
@@ -100,7 +108,7 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
         <Form style={{ width: '100%' }} form={formRef} scrollToFirstError>
           <Form.Item
             label="大集名称"
-            field="title"
+            field="name"
             labelCol={{ span: 3 }}
             rules={[{ required: true, message: '请输入大集名称' }]}
           >
@@ -156,12 +164,12 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
           <Form.Item
             label="坐标拾取"
             labelCol={{ span: 3 }}
-            rules={[{ required: true }]}
+            // rules={[{ required: true }]}
           >
             <div className={styles['ip-info']}>
               <Form.Item
                 field="coordinates"
-                rules={[{ required: true, message: '请输入位置' }]}
+                // rules={[{ required: true, message: '请输入位置' }]}
                 style={{ width: 200, marginBottom: 0 }}
               >
                 <Input
@@ -184,15 +192,15 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
                 定位
               </Button>
               <Input
-                style={{ width: 200, height: 32 }}
+                style={{ width: 240, height: 32 }}
                 placeholder="纬度"
-                value={position.lat} // 显示纬度
+                value={'纬度：' + position.lat} // 显示纬度
                 disabled
               />
               <Input
-                style={{ width: 200, height: 32, marginLeft: '10px' }}
+                style={{ width: 240, height: 32, marginLeft: '10px' }}
                 placeholder="经度"
-                value={position.lng} // 显示经度
+                value={'经度：' + position.lng} // 显示经度
                 disabled
               />
             </div>
