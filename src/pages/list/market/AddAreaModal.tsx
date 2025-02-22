@@ -15,12 +15,12 @@ import { datesList } from './constants';
 import { getAreas } from '../../../api/market';
 
 const AddAreaModal = ({ visible, onOk, onClose, record }) => {
-  const [form] = Form.useForm();
+  const [formRef] = Form.useForm();
 
   useEffect(() => {
     if (visible && record) {
-      form.setFieldsValue({
-        title: record.title, // 根据 record 的内容回显大集名称
+      formRef.setFieldsValue({
+        coordinates: '天安门', // 根据 record 的内容回显大集名称
       });
     }
   }, [visible, record]); // 依赖于 visible 和 record
@@ -35,6 +35,10 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
           value: item.id,
         }))
       );
+
+      formRef.setFieldsValue({
+        coordinates: '',
+      });
     };
 
     fetchAreas(); // 组件加载时调用接口
@@ -42,7 +46,7 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
 
   const handleOk = async () => {
     try {
-      let values = await form.validate();
+      let values = await formRef.validate();
       if (record) {
         values = {
           ...values,
@@ -53,7 +57,7 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
       console.log('values', values);
       const ret = await onOk(values); // 调用父组件传入的 onOk
       if (ret) {
-        form.resetFields(); // 重置表单
+        formRef.resetFields(); // 重置表单
       }
     } catch (error) {
       console.log('表单验证失败:', error);
@@ -61,7 +65,7 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
   };
 
   const handClose = async () => {
-    form.resetFields(); // 重置表单
+    formRef.resetFields(); // 重置表单
     await onClose();
   };
 
@@ -78,7 +82,7 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
   const mapRef = useRef(null); // 创建 ref
   const areaSearch = () => {
     if (mapRef.current) {
-      mapRef.current.searchByKeyword(); // 调用子组件的方法
+      mapRef.current.searchByKeyword(formRef.getFieldValue('coordinates')); // 调用子组件的方法
     }
   };
 
@@ -93,7 +97,7 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
         cancelText="取消"
         style={{ width: '1000px' }}
       >
-        <Form style={{ width: '100%' }} form={form} scrollToFirstError>
+        <Form style={{ width: '100%' }} form={formRef} scrollToFirstError>
           <Form.Item
             label="大集名称"
             field="title"
@@ -149,22 +153,29 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
           >
             <Input style={{ width: 400 }} placeholder="请输入地址" allowClear />
           </Form.Item>
-          {/* <Form.Item
-            label="公交方式"
-            field="title"
-            labelCol={{ span: 3 }}
-            rules={[{ required: true, message: '请输入公交方式' }]}
-          >
-            <Input style={{ width: 400 }} placeholder="请输入公交方式" />
-          </Form.Item> */}
           <Form.Item
             label="坐标拾取"
-            field="coordinates"
             labelCol={{ span: 3 }}
-            rules={[{ required: true, message: '请输入坐标' }]}
+            rules={[{ required: true }]}
           >
-            <div style={{ marginBottom: '20px' }}>
-              <Input style={{ width: 200 }} placeholder="请输入" allowClear />
+            <div className={styles['ip-info']}>
+              <Form.Item
+                field="coordinates"
+                rules={[{ required: true, message: '请输入位置' }]}
+                style={{ width: 200, marginBottom: 0 }}
+              >
+                <Input
+                  placeholder="请输入"
+                  allowClear
+                  onChange={(keyword) => {
+                    console.log('E', keyword);
+                    if (!keyword) {
+                      areaSearch();
+                    }
+                  }}
+                  onClear={areaSearch}
+                />
+              </Form.Item>
               <Button
                 type="primary"
                 style={{ marginLeft: '10px', marginRight: '10px' }}
@@ -173,13 +184,13 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
                 定位
               </Button>
               <Input
-                style={{ width: 200 }}
+                style={{ width: 200, height: 32 }}
                 placeholder="纬度"
                 value={position.lat} // 显示纬度
                 disabled
               />
               <Input
-                style={{ width: 200, marginLeft: '10px' }}
+                style={{ width: 200, height: 32, marginLeft: '10px' }}
                 placeholder="经度"
                 value={position.lng} // 显示经度
                 disabled
@@ -193,6 +204,7 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
               ></Map>
             </Spin>
           </Form.Item>
+          {/* </div> */}
         </Form>
       </Modal>
     </>
