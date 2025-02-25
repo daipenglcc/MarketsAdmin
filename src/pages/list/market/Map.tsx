@@ -106,8 +106,10 @@ const MapComponent = forwardRef(
       console.log('item', item);
       // 将经纬度传递给父组件
       onGetPosition({ lat: item.location.lat, lng: item.location.lng });
-      //修改地图中心点
+      // 修改地图中心点
       map.setCenter(new TMap.LatLng(item.location.lat, item.location.lng));
+      // 设置缩放级别
+      map.setZoom(17);
       //修改 id 为 marker1 的点标记的位置
       marker.updateGeometries([
         {

@@ -9,6 +9,7 @@ import {
   Tag,
   Button,
 } from '@arco-design/web-react';
+import { sortChineseNumbers } from '../../../utils/utils';
 import Map from './Map';
 import styles from './style/map.module.less';
 import { datesList } from './constants';
@@ -20,8 +21,18 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
   useEffect(() => {
     if (visible && record) {
       formRef.setFieldsValue({
-        coordinates: '天安门', // 根据 record 的内容回显大集名称
+        name: record.name,
+        area_id: record.area_id,
+        dates: record.dates.split(','),
+        bus_routes: record.bus_routes,
+        address: record.address,
       });
+
+      setPosition(record.location);
+      // 地图初始化
+      // if (mapRef.current) {
+      //   mapRef.current.searchByKeyword(formRef.getFieldValue('coordinates')); // 调用子组件的方法
+      // }
     }
   }, [visible, record]); // 依赖于 visible 和 record
 
@@ -46,29 +57,33 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
 
   const handleOk = async () => {
     try {
-      let values = await formRef.validate();
-      console.log('values', values);
+      const values = await formRef.validate();
       let objData = {
         name: values.name,
+        region: areaOptions.find((x) => {
+          return x.value == values.area_id;
+        }).label,
         area_id: values.area_id,
-        region: values.area_id,
-        dates: values.dates,
-        position: position,
+        dates: sortChineseNumbers(values.dates).join(','),
+        address: values.address,
+        bus_routes: values.bus_routes,
+        location: {
+          lng: position.lng,
+          lat: position.lat,
+        },
       };
-      return;
       if (record) {
         objData = {
-          ...objData,
           id: record.id,
+          ...objData,
         };
       }
-
-      const ret = await onOk(objData); // 调用父组件传入的 onOk
+      const ret = await onOk(objData);
       if (ret) {
         formRef.resetFields(); // 重置表单
       }
     } catch (error) {
-      console.log('表单验证失败:', error);
+      console.log('error', error);
     }
   };
 
@@ -161,11 +176,10 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
           >
             <Input style={{ width: 400 }} placeholder="请输入地址" allowClear />
           </Form.Item>
-          <Form.Item
-            label="坐标拾取"
-            labelCol={{ span: 3 }}
-            // rules={[{ required: true }]}
-          >
+          <Form.Item label="公交方式" field="bus_routes" labelCol={{ span: 3 }}>
+            <Input style={{ width: 400 }} placeholder="请输入地址" allowClear />
+          </Form.Item>
+          <Form.Item label="坐标拾取" labelCol={{ span: 3 }}>
             <div className={styles['ip-info']}>
               <Form.Item
                 field="coordinates"

@@ -7,6 +7,7 @@ import {
   Button,
   Space,
   Typography,
+  Modal,
 } from '@arco-design/web-react';
 import { IconPlus } from '@arco-design/web-react/icon';
 import axios from 'axios';
@@ -16,13 +17,9 @@ import styles from './style/index.module.less';
 import './mock';
 import { getColumns } from './constants';
 import AddAreaModal from './AddAreaModal';
-import { getAreas, addArea, updataArea } from '../../../api/market';
+import { upsertMerchant, deleteMerchant } from '../../../api/market';
 
 const { Title } = Typography;
-export const ContentType = ['图文', '横版短视频', '竖版短视频'];
-export const FilterType = ['规则筛选', '人工'];
-export const Status = ['已上线', '未上线'];
-
 // 在文件顶部定义 formParams 的类型
 interface FormParams {
   name?: string;
@@ -31,11 +28,31 @@ interface FormParams {
 
 function SearchTable() {
   const [selectedRecord, setSelectedRecord] = useState(null); // 新增状态来存储选中的记录
-
   const tableCallback = async (record, type) => {
     console.log(record, type);
-  };
+    if (type === 'edit') {
+      setSelectedRecord(record); // 设置选中的记录
+      setModalVisible(true); // 显示弹窗
+    }
 
+    if (type === 'delete') {
+      // 执行删除
+      Modal.confirm({
+        title: `确定删除【${record.name}】吗？`,
+        okText: '确定',
+        cancelText: '取消',
+        okButtonProps: {
+          status: 'danger',
+        },
+        onOk: async () => {
+          await deleteMerchant({
+            id: record.id,
+          });
+          fetchData();
+        },
+      });
+    }
+  };
   const columns = getColumns(tableCallback);
 
   const [data, setData] = useState([]);
@@ -61,7 +78,7 @@ function SearchTable() {
         pageIndex: current,
         pageSize,
         name,
-        areaId: areaId ? areaId.join(',') : '', // 确保 areaId 存在时才调用 join
+        areaId: areaId ? areaId.join(',') : '',
       });
       setData(ret.merchants);
       setPatination({
@@ -85,32 +102,25 @@ function SearchTable() {
     });
   }
 
-  const [modalVisible, setModalVisible] = useState(true); // 控制弹窗显示
-  const handleAdd = () => {
-    setModalVisible(true); // 显示弹窗
-  };
-
+  // 搜索
   function handleSearch(params) {
     setPatination({ ...pagination, current: 1 });
     setFormParams(params);
   }
 
-  const handleOk = async (values) => {
-    try {
-      if (!values.id) {
-        // 新增
-        await addArea({
-          title: values.title,
-        });
-      } else {
-        // 修改
-        await updataArea({
-          id: values.id,
-          title: values.title,
-        });
-      }
+  // 控制弹窗显示
+  const [modalVisible, setModalVisible] = useState(false);
 
-      Message.success(`${values.id ? '修改' : '添加'}成功`);
+  // 新增
+  const handleAdd = () => {
+    setModalVisible(true); // 显示弹窗
+  };
+
+  // 弹窗-提交
+  const handleOk = async (objData) => {
+    try {
+      await upsertMerchant(objData);
+      Message.success(`${objData.id ? '修改' : '添加'}成功`);
       setModalVisible(false);
       setSelectedRecord(null);
       fetchData();
@@ -120,9 +130,11 @@ function SearchTable() {
       return false;
     }
   };
+
+  // 弹窗-关闭
   const onClose = () => {
-    setModalVisible(false); // 关闭弹窗
-    setSelectedRecord(null); // 设置选中的记录
+    setModalVisible(false);
+    setSelectedRecord(null);
   };
 
   return (

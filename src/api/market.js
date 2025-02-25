@@ -19,3 +19,18 @@ export const updataArea = (data) => {
 export const getAllMerchants = (params) => {
   return axiosInstance.get('/api/market/getMerchants', { params });
 };
+
+// 新增/编辑大集
+export const upsertMerchant = (data) => {
+  return axiosInstance.post('/api/market/upsertMerchant', data);
+};
+
+// 删除大集
+export const deleteMerchant = (data) => {
+  return axiosInstance.post('/api/market/deleteMerchant', data);
+};
+
+// 获取大集详情
+export const getMerchantDetail = (params) => {
+  return axiosInstance.get('/api/market/getMerchantDetail', { params });
+};

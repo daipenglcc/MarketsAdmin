@@ -28,3 +28,9 @@ npm run build
 - [腾讯地图组件库](https://lbs.qq.com/webApi/javascriptGL/glGuide/glComponents)
 - [腾讯地图示例中心](https://lbs.qq.com/webDemoCenter/glAPI/glServiceLib/suggestion)
 - [点标记开发文档](https://lbs.qq.com/webApi/javascriptGL/glGuide/glMarker)
+- [MapOptions 对象规范](https://lbs.qq.com/javascript_gl/doc/mapoptions.html)
+
+## 用户名
+
+test jjyntest 1
+admin jijiyouniadmin 10

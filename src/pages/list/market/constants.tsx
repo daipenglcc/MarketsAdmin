@@ -89,13 +89,22 @@ export function getColumns(
       dataIndex: 'operations',
       headerCellStyle: { paddingLeft: '15px' },
       render: (_, record) => (
-        <Button
-          type="text"
-          size="small"
-          onClick={() => callback(record, 'view')}
-        >
-          编辑
-        </Button>
+        <>
+          <Button
+            type="text"
+            size="small"
+            onClick={() => callback(record, 'edit')}
+          >
+            编辑
+          </Button>
+          <Button
+            type="text"
+            size="small"
+            onClick={() => callback(record, 'delete')}
+          >
+            删除
+          </Button>
+        </>
       ),
     },
   ];
