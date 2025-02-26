@@ -15,9 +15,11 @@ import styles from './style/map.module.less';
 import { datesList } from './constants';
 import { getAreas } from '../../../api/market';
 
+const lat = '39.908820249133356';
+const lng = '116.39747208772576';
+
 const AddAreaModal = ({ visible, onOk, onClose, record }) => {
   const [formRef] = Form.useForm();
-
   useEffect(() => {
     if (visible && record) {
       formRef.setFieldsValue({
@@ -29,10 +31,11 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
       });
 
       setPosition(record.location);
-      // 地图初始化
-      // if (mapRef.current) {
-      //   mapRef.current.searchByKeyword(formRef.getFieldValue('coordinates')); // 调用子组件的方法
-      // }
+    } else {
+      setPosition({
+        lat,
+        lng,
+      });
     }
   }, [visible, record]); // 依赖于 visible 和 record
 
@@ -93,8 +96,8 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
   };
 
   const [position, setPosition] = useState({
-    lat: '39.908820249133356',
-    lng: '116.39747208772576',
+    lat: lat,
+    lng: lng,
   });
 
   const onGetPosition = (position) => {
@@ -116,6 +119,7 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
         visible={visible}
         onOk={handleOk}
         onCancel={handClose}
+        unmountOnExit={true}
         okText="确定"
         cancelText="取消"
         style={{ width: '1000px' }}
@@ -142,7 +146,7 @@ const AddAreaModal = ({ visible, onOk, onClose, record }) => {
             <Select
               style={{ width: 200 }}
               placeholder="请选择所属地区"
-              options={areaOptions} // 使用从接口获取的地区选项
+              options={areaOptions}
               allowClear
             />
           </Form.Item>

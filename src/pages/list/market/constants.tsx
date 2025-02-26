@@ -60,11 +60,11 @@ export function getColumns(
     {
       title: '大集编号',
       dataIndex: 'id',
-      render: (value) => <Text copyable>{value}</Text>,
     },
     {
       title: '大集名称',
       dataIndex: 'name',
+      render: (value) => <Text copyable>{value}</Text>,
     },
     {
       title: '阴历日期',

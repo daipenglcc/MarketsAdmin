@@ -9,7 +9,6 @@ import { List, Spin } from '@arco-design/web-react';
 import styles from './style/map.module.less';
 
 const TMapAPIKey = 'Y6FBZ-DUOLQ-TDY5C-2C3NN-RQQYO-4SBHB'; // 在这里填入您的腾讯地图API key
-
 interface MapComponentProps {
   positionData: { lat: string; lng: string }; // 定义 positionData 的类型
   onGetPosition: (position: { lat: number; lng: number }) => void; // 定义 onGetPosition 的类型
@@ -120,8 +119,9 @@ const MapComponent = forwardRef(
       ]);
     };
 
+    // 暴露方法
     useImperativeHandle(ref, () => ({
-      searchByKeyword, // 暴露方法
+      searchByKeyword,
     }));
 
     return (

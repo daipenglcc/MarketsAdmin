@@ -15,11 +15,11 @@ export function getColumns(
     {
       title: '区域编号',
       dataIndex: 'id',
-      render: (value) => <Text copyable>{value}</Text>,
     },
     {
       title: '区域名称',
       dataIndex: 'title',
+      render: (value) => <Text copyable>{value}</Text>,
     },
     {
       title: '创建时间',

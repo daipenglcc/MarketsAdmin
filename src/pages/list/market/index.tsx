@@ -10,11 +10,9 @@ import {
   Modal,
 } from '@arco-design/web-react';
 import { IconPlus } from '@arco-design/web-react/icon';
-import axios from 'axios';
-import SearchForm from './form';
+import SearchForm from './SearchForm';
 import { getAllMerchants } from '../../../api/market';
 import styles from './style/index.module.less';
-import './mock';
 import { getColumns } from './constants';
 import AddAreaModal from './AddAreaModal';
 import { upsertMerchant, deleteMerchant } from '../../../api/market';
@@ -48,6 +46,8 @@ function SearchTable() {
           await deleteMerchant({
             id: record.id,
           });
+          Message.success(`【${record.name}】删除成功`);
+
           fetchData();
         },
       });
