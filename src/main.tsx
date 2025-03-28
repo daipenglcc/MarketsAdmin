@@ -7,12 +7,11 @@ import { ConfigProvider } from '@arco-design/web-react';
 import zhCN from '@arco-design/web-react/es/locale/zh-CN';
 import enUS from '@arco-design/web-react/es/locale/en-US';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import axios from 'axios';
+import { getUserInfo } from './api/user';
 import rootReducer from './store';
 import PageLayout from './layout';
 import { GlobalContext } from './context';
 import Login from './pages/login';
-import checkLogin from './utils/checkLogin';
 import changeTheme from './utils/changeTheme';
 import useStorage from './utils/useStorage';
 import './mock';
@@ -37,21 +36,31 @@ function Index() {
     }
   }
 
-  function fetchUserInfo() {
+  async function fetchUserInfo() {
     store.dispatch({
       type: 'update-userInfo',
       payload: { userLoading: true },
     });
-    axios.get('/api/user/userInfo').then((res) => {
+    try {
+      const ret: any = await getUserInfo();
       store.dispatch({
         type: 'update-userInfo',
-        payload: { userInfo: res.data, userLoading: false },
+        payload: {
+          userInfo: {
+            username: ret.username,
+            avatar: ret.avatar,
+          },
+          userLoading: false,
+        },
       });
-    });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   useEffect(() => {
-    if (checkLogin()) {
+    const checkLogin = localStorage.getItem('userStatus') === 'login';
+    if (checkLogin) {
       fetchUserInfo();
     } else if (window.location.pathname.replace(/\//g, '') !== 'login') {
       window.location.pathname = '/login';

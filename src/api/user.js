@@ -12,3 +12,8 @@ import axiosInstance from '../utils/axiosInstance';
 export const loginApi = (params) => {
   return axiosInstance.get('/api/user/login', { params });
 };
+
+// 获取用户信息
+export const getUserInfo = (params) => {
+  return axiosInstance.get('/api/user/getUserInfo', { params });
+};

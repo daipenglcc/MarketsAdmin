@@ -128,7 +128,7 @@ function Navbar({ show }: { show: boolean }) {
                 {userLoading ? (
                   <IconLoading />
                 ) : (
-                  <img alt="avatar" src="https://bucket.vues.cn/jjyn/cat.jpg" />
+                  <img alt="avatar" src={userInfo.avatar} />
                 )}
               </Avatar>
             </Dropdown>
