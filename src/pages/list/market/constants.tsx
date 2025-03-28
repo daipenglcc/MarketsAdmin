@@ -1,15 +1,10 @@
 import React from 'react';
 import { Button, Typography, Badge } from '@arco-design/web-react';
-// import IconText from './icons/text.svg';
-// import IconHorizontalVideo from './icons/horizontal.svg';
-// import IconVerticalVideo from './icons/vertical.svg';
 import dayjs from 'dayjs';
-import styles from './style/index.module.less';
+import { IconLock } from '@arco-design/web-react/icon';
 
 const { Text } = Typography;
 
-export const ContentType = ['图文', '横版短视频', '竖版短视频'];
-export const FilterType = ['规则筛选', '人工'];
 export const datesList = [
   {
     label: '逢一',
@@ -64,7 +59,13 @@ export function getColumns(
     {
       title: '大集名称',
       dataIndex: 'name',
-      render: (value) => <Text copyable>{value}</Text>,
+      render: (value, item) => (
+        <>
+          {/* copyable */}
+          <Text>{value}</Text>
+          <IconLock style={{ marginLeft: 5 }} />
+        </>
+      ),
     },
     {
       title: '阴历日期',
@@ -109,5 +110,3 @@ export function getColumns(
     },
   ];
 }
-
-// export default () => ContentIcon;

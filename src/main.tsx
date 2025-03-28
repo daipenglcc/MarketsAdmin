@@ -17,7 +17,10 @@ import changeTheme from './utils/changeTheme';
 import useStorage from './utils/useStorage';
 import './mock';
 
-const store = createStore(rootReducer);
+const store = createStore(
+  rootReducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 
 function Index() {
   const [lang, setLang] = useStorage('arco-lang', 'en-US');

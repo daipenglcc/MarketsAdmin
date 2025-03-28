@@ -22,7 +22,7 @@ if (!isSSR) {
           organizationName: '前端',
           location: 'beijing',
           locationName: '北京',
-          introduction: '王力群并非是一个真实存在的人。',
+          introduction: '12121王力群并非是一个真实存在的人。',
           personalWebsite: 'https://www.arco.design',
           verified: true,
           phoneNumber: /177[*]{6}[0-9]{2}/,
@@ -30,32 +30,6 @@ if (!isSSR) {
           registrationTime: Mock.Random.datetime('yyyy-MM-dd HH:mm:ss'),
           permissions: generatePermission(userRole),
         });
-      });
-
-      // 登录
-      Mock.mock(new RegExp('/api/user2/login'), (params) => {
-        const { userName, password } = JSON.parse(params.body);
-        if (!userName) {
-          return {
-            status: 'error',
-            msg: '用户名不能为空',
-          };
-        }
-        if (!password) {
-          return {
-            status: 'error',
-            msg: '密码不能为空',
-          };
-        }
-        if (userName === 'admin' && password === 'admin') {
-          return {
-            status: 'ok',
-          };
-        }
-        return {
-          status: 'error',
-          msg: '账号或者密码错误',
-        };
       });
     },
   });

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Typography, Badge } from '@arco-design/web-react';
 import dayjs from 'dayjs';
-import styles from './style/index.module.less';
+import { IconLock } from '@arco-design/web-react/icon';
 
 const { Text } = Typography;
 
@@ -19,7 +19,13 @@ export function getColumns(
     {
       title: '区域名称',
       dataIndex: 'title',
-      render: (value) => <Text copyable>{value}</Text>,
+      render: (value, item) => (
+        <>
+          {/* copyable */}
+          <Text>{value}</Text>
+          <IconLock style={{ marginLeft: 5 }} />
+        </>
+      ),
     },
     {
       title: '创建时间',
