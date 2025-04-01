@@ -32,11 +32,17 @@ axiosInstance.interceptors.response.use(
     // 处理响应错误
     if (error.response) {
       // 请求已发出，但服务器响应了状态码
-      console.error('Error Response:', error.response);
+      console.log('Error Response:', error.response);
       Message.error(error.response.data.message);
+      const errorCode = error.response.data.code;
+      // if (errorCode === 401) {
+      //   // token过期
+      //   localStorage.removeItem('userStatus');
+      //   window.location.href = '/login';
+      // }
     } else {
       // 其他错误
-      console.error('Error Message:', error.message);
+      console.log('Error Message:', error.message);
       Message.error(error.response.data.message);
     }
     return Promise.reject(error);

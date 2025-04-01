@@ -63,7 +63,7 @@ export function getColumns(
         <>
           {/* copyable */}
           <Text>{value}</Text>
-          <IconLock style={{ marginLeft: 5 }} />
+          {item.locked == 1 && <IconLock style={{ marginLeft: 5 }} />}
         </>
       ),
     },
@@ -91,6 +91,14 @@ export function getColumns(
       headerCellStyle: { paddingLeft: '15px' },
       render: (_, record) => (
         <>
+          <Button
+            type="text"
+            size="small"
+            onClick={() => callback(record, 'lock')}
+          >
+            {record.locked == 1 ? '解锁' : '锁定'}
+          </Button>
+
           <Button
             type="text"
             size="small"

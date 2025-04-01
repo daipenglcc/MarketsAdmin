@@ -15,7 +15,11 @@ import { getAllMerchants } from '../../../api/market';
 import styles from './style/index.module.less';
 import { getColumns } from './constants';
 import AddAreaModal from './AddAreaModal';
-import { upsertMerchant, deleteMerchant } from '../../../api/market';
+import {
+  upsertMerchant,
+  deleteMerchant,
+  lockMerchant,
+} from '../../../api/market';
 
 const { Title } = Typography;
 // 在文件顶部定义 formParams 的类型
@@ -28,6 +32,30 @@ function SearchTable() {
   const [selectedRecord, setSelectedRecord] = useState(null); // 新增状态来存储选中的记录
   const tableCallback = async (record, type) => {
     console.log(record, type);
+    if (type === 'lock') {
+      // 执行删除
+      Modal.confirm({
+        title: `确定${record.locked == 1 ? '解锁' : '锁定'}【${
+          record.name
+        }】吗？`,
+        okText: '确定',
+        cancelText: '取消',
+        okButtonProps: {
+          status: 'danger',
+        },
+        onOk: async () => {
+          await lockMerchant({
+            id: record.id,
+          });
+          Message.success(
+            `【${record.name}】${record.locked == 1 ? '解锁' : '锁定'}成功`
+          );
+
+          fetchData();
+        },
+      });
+    }
+
     if (type === 'edit') {
       setSelectedRecord(record); // 设置选中的记录
       setModalVisible(true); // 显示弹窗

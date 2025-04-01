@@ -30,6 +30,11 @@ export const deleteMerchant = (data) => {
   return axiosInstance.post('/api/market/deleteMerchant', data);
 };
 
+// 解锁/锁定大集
+export const lockMerchant = (data) => {
+  return axiosInstance.post('/api/market/lockMerchant', data);
+};
+
 // 获取大集详情
 export const getMerchantDetail = (params) => {
   return axiosInstance.get('/api/market/getMerchantDetail', { params });
